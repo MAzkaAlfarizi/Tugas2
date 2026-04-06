@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediksi Harga Perak</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .container-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Mengetengahkan secara horizontal */
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .plot-img {
+            max-width: 80%; /* Agar gambar tidak melewati lebar layar */
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-5 mb-5">
+        <h2 class="text-center mb-4">Sistem Prediksi Regresi Linear</h2>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">Cek Prediksi Spesifik</div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">Masukkan Tahun:</label>
+                                <input type="number" name="tahun" class="form-control" placeholder="Contoh: 2026" required>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100">Hitung Prediksi</button>
+                        </form>
+
+                        {% if prediction %}
+                        <div class="mt-4 alert alert-info">
+                            <h5>Hasil Tahun {{ tahun }}:</h5>
+                            <p class="h3"><strong>{{ prediction }}</strong></p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-white">Metrik Evaluasi Model</div>
+                    <div class="card-body">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Metrik</th>
+                                    <th>Nilai</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MAE (Mean Absolute Error)</td>
+                                    <td>{{ mae }}</td>
+                                </tr>
+                                <tr>
+                                    <td>MSE (Mean Squared Error)</td>
+                                    <td>{{ mse }}</td>
+                                </tr>
+                                <tr>
+                                    <td>R² (R-squared)</td>
+                                    <td>{{ r2 }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="container-visual">
+                    <h3>Hasil Visualisasi Prediksi</h3>
+                    <img src="{{ url_for('static', filename='plot_regresi.png') }}" alt="Grafik Regresi Linear" class="plot-img">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
