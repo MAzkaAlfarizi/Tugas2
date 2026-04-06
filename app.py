@@ -1,25 +1,27 @@
 from flask import Flask, render_template, request
+import os
 import pandas as pd
 import joblib
 import numpy as np
 
 app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Load model
-model = joblib.load('model.pkl')
+model = joblib.load(os.path.join(BASE_DIR, 'model.pkl'))
 
 def get_prediction_table():
     # Membuat rentang tahun 2026 - 2030 sesuai logika di notebook
-    future_years = np.array(range(2026, 2031))
+    future_years = range(2026, 2031)
     results = []
     
     for year in future_years:
         # Konversi ke format numerik (seconds since epoch)
         date_str = f"{year}-01-01"
-        date_numeric = pd.to_datetime([date_str]).astype(int) // 10**9
+        date_numeric = int(pd.Timestamp(date_str).timestamp())
         
         # Prediksi
-        pred_value = model.predict(date_numeric.values.reshape(-1, 1))
+        pred_value = model.predict(np.array([[date_numeric]]))
         results.append({
             'tahun': year,
             'harga': round(pred_value[0], 2)
@@ -43,8 +45,8 @@ def index():
         tahun_input = request.form.get('tahun')
         if tahun_input:
             date_str = f"{tahun_input}-01-01"
-            date_numeric = pd.to_datetime([date_str]).astype(int) // 10**9
-            pred_value = model.predict(date_numeric.values.reshape(-1, 1))
+            date_numeric = int(pd.Timestamp(date_str).timestamp())
+            pred_value = model.predict(np.array([[date_numeric]]))
             prediction = round(pred_value[0], 2)
 
     return render_template('index.html', 
